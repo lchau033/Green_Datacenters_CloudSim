@@ -56,6 +56,11 @@ public class Constants {
 	public final static int[] HOST_RAM	 = { 4096, 4096 };
 	public final static int HOST_BW		 = 1000000; // 1 Gbit/s
 	public final static int HOST_STORAGE = 1000000; // 1 GB
+	public final static double[] POWER_COOLING= {0.6, 0.57, 0.55, 0.54, 0.55, 0.53, 0.53, 0.62, 0.66, 0.8, 0.88 };
+	
+	public final static double getCoolingPower(double serverLoad, double computePower) {
+		return POWER_COOLING[(int)Math.floor(serverLoad * 10)] * computePower;
+	}
 
 	public final static PowerModel[] HOST_POWER = {
 		new PowerModelSpecPowerHpProLiantMl110G4Xeon3040(),

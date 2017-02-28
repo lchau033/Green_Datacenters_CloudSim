@@ -620,12 +620,12 @@ public class Host {
 		this.datacenter = datacenter;
 	}
 	
-	public List<Double> getCurrentRequestedMips() {
+	public double getCurrentRequestedMips() {
 		Iterator<? extends Vm> it = this.vmList.iterator(); 
-		List<Double> currentRequestedMips = new ArrayList<Double>();
+		double currentRequestedMips = 0.0;
 		while(it.hasNext()){
 			Vm vm = it.next();
-			currentRequestedMips.addAll(vm.getCurrentRequestedMips());
+			currentRequestedMips += vm.getCurrentRequestedTotalMips();
 		}
 		return currentRequestedMips;
 	}

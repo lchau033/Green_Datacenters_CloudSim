@@ -86,6 +86,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
 	 * @return the power host
 	 */
 	public PowerHost findHostForVm(Vm vm) {
+		
 		for (PowerHost host : this.<PowerHost> getHostList()) {
 			if (host.isSuitableForVm(vm)) {
 				return host;
