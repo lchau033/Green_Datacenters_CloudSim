@@ -288,7 +288,8 @@ public abstract class RunnerAbstract {
 		} else if (vmAllocationPolicyName.equals("pue")) {
 			vmAllocationPolicy = new PowerVmAllocationPolicyMigrationPowerUsageEfficiency(
 					hostList,
-					vmSelectionPolicy);
+					vmSelectionPolicy,
+					parameter);
 		} else {
 			System.out.println("Unknown VM allocation policy: " + vmAllocationPolicyName);
 			System.exit(0);

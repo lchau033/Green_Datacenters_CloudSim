@@ -13,6 +13,7 @@ import java.util.List;
 import org.cloudbus.cloudsim.HostDynamicWorkload;
 import org.cloudbus.cloudsim.Pe;
 import org.cloudbus.cloudsim.VmScheduler;
+import org.cloudbus.cloudsim.examples.power.Constants;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.provisioners.BwProvisioner;
 import org.cloudbus.cloudsim.provisioners.RamProvisioner;
@@ -134,5 +135,42 @@ public class PowerHost extends HostDynamicWorkload {
 	public PowerModel getPowerModel() {
 		return powerModel;
 	}
+	
+	/**
+	 * Gets the percentage of server under load.
+	 *
+	 * @return the server load percentage
+	 */
+	public double getServerLoadPercentage() {
+		return getCurrentRequestedMips() / (getTotalMips() + getCurrentRequestedMips());
+	}
 
+	/**
+	 * Gets the current compute power.
+	 * 
+	 * @return the current compute power
+	 */
+	public double getComputePower() {
+		return getPowerModel().getPower(getServerLoadPercentage());
+	}
+	
+	/**
+	 * Gets the current cooling power.
+	 * 
+	 * @return the current cooling power
+	 */
+	public double getCoolingPower() {
+		return Constants.getCoolingPower(getServerLoadPercentage(), getComputePower());
+	}
+		
+	/**
+	 * Gets the current power usage efficiency.
+	 * 
+	 * @return the current power usage efficiency
+	 */
+	public double getPowerUsageEfficiency() {
+		double computePower = getComputePower();
+		double coolingPower = getCoolingPower();
+		return (coolingPower + computePower) / computePower;
+	}
 }

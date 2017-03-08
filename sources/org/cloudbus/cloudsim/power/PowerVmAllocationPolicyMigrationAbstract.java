@@ -55,6 +55,15 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 
 	/** The time history. */
 	private final Map<Integer, List<Double>> timeHistory = new HashMap<Integer, List<Double>>();
+	
+	/** The cooling power history. */
+	private final Map<Integer, List<Double>> coolingPowerHistory = new HashMap<Integer, List<Double>>();
+	
+	/** The computing power history. */
+	private final Map<Integer, List<Double>> computePowerHistory = new HashMap<Integer, List<Double>>();
+	
+	/** The power usage efficiency history. */
+	private final Map<Integer, List<Double>> pueHistory = new HashMap<Integer, List<Double>>();
 
 	/** The execution time history vm selection. */
 	private final List<Double> executionTimeHistoryVmSelection = new LinkedList<Double>();
@@ -483,10 +492,26 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 		if (!getMetricHistory().containsKey(hostId)) {
 			getMetricHistory().put(hostId, new LinkedList<Double>());
 		}
+		if (!getCoolingPowerHistory().containsKey(hostId)) {
+			getCoolingPowerHistory().put(hostId, new LinkedList<Double>());
+		}
+		if (!getComputePowerHistory().containsKey(hostId)) {
+			getComputePowerHistory().put(hostId, new LinkedList<Double>());
+		}
+		if (!getPUEHistory().containsKey(hostId)) {
+			getPUEHistory().put(hostId, new LinkedList<Double>());
+		}
 		if (!getTimeHistory().get(hostId).contains(CloudSim.clock())) {
 			getTimeHistory().get(hostId).add(CloudSim.clock());
 			getUtilizationHistory().get(hostId).add(host.getUtilizationOfCpu());
 			getMetricHistory().get(hostId).add(metric);
+			
+			if (host instanceof PowerHost) {
+				PowerHost powerHost = (PowerHost) host;
+				getCoolingPowerHistory().get(hostId).add(powerHost.getCoolingPower());
+				getComputePowerHistory().get(hostId).add(powerHost.getComputePower());
+				getPUEHistory().get(hostId).add(powerHost.getPowerUsageEfficiency());
+			}
 		}
 	}
 
@@ -634,6 +659,33 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 	 */
 	public Map<Integer, List<Double>> getTimeHistory() {
 		return timeHistory;
+	}
+	
+	/**
+	 * Gets the computing power history.
+	 * 
+	 * @return the computing power history
+	 */
+	public Map<Integer, List<Double>> getComputePowerHistory() {
+		return computePowerHistory;
+	}
+	
+	/**
+	 * Gets the cooling power history.
+	 * 
+	 * @return the cooling power history
+	 */
+	public Map<Integer, List<Double>> getCoolingPowerHistory() {
+		return coolingPowerHistory;
+	}
+	
+	/**
+	 * Gets the power usage efficiency history.
+	 * 
+	 * @return the power usage efficiency history
+	 */
+	public Map<Integer, List<Double>> getPUEHistory() {
+		return pueHistory;
 	}
 
 	/**

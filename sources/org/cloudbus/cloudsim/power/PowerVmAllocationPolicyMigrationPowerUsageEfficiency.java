@@ -9,13 +9,22 @@ import org.cloudbus.cloudsim.examples.power.Constants;
 
 public class PowerVmAllocationPolicyMigrationPowerUsageEfficiency extends PowerVmAllocationPolicyMigrationAbstract {
 
-	
+	/** The utilization threshold. */
 	private double utilizationThreshold = 0.9;
-
-	public PowerVmAllocationPolicyMigrationPowerUsageEfficiency(List<? extends Host> hostList,
-			PowerVmSelectionPolicy vmSelectionPolicy) {
+	
+	/**
+	 * Instantiates a new power vm allocation policy migration mad.
+	 * 
+	 * @param hostList the host list
+	 * @param vmSelectionPolicy the vm selection policy
+	 * @param utilizationThreshold the utilization threshold
+	 */
+	public PowerVmAllocationPolicyMigrationPowerUsageEfficiency(
+			List<? extends Host> hostList,
+			PowerVmSelectionPolicy vmSelectionPolicy,
+			double utilizationThreshold) {
 		super(hostList, vmSelectionPolicy);
-		// TODO Auto-generated constructor stub
+		setUtilizationThreshold(utilizationThreshold);
 	}
 
 	@Override
@@ -28,6 +37,12 @@ public class PowerVmAllocationPolicyMigrationPowerUsageEfficiency extends PowerV
 		double utilization = totalRequestedMips / host.getTotalMips();
 		return utilization > getUtilizationThreshold();
 	}
+	
+	/**
+	 * Sets the utilization threshold.
+	 * 
+	 * @param utilizationThreshold the new utilization threshold
+	 */
 	protected void setUtilizationThreshold(double utilizationThreshold) {
 		this.utilizationThreshold = utilizationThreshold;
 	}
@@ -55,14 +70,8 @@ public class PowerVmAllocationPolicyMigrationPowerUsageEfficiency extends PowerV
 				continue;
 			}
 			
-			double currentRequestedMips = host.getCurrentRequestedMips();
-			double currentMips = host.getTotalMips();
-			double serverLoadPercentage = currentRequestedMips/(currentMips+currentRequestedMips);
-			
-			double computePower = host.getPowerModel().getPower(serverLoadPercentage);
-			double coolingPower = Constants.getCoolingPower(serverLoadPercentage, computePower);
-			double powerUsageEfficiency = (coolingPower + computePower) / computePower;
-			if( powerUsageEfficiency< min && host.isSuitableForVm(vm)){
+			double powerUsageEfficiency = host.getPowerUsageEfficiency();
+			if (powerUsageEfficiency < min && host.isSuitableForVm(vm)) {
 				min = powerUsageEfficiency;
 				minHost = host;
 			}

@@ -40,25 +40,25 @@ import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
  * The Class Helper.
- * 
+ *
  * If you are using any algorithms, policies or workload included in the power package, please cite
  * the following paper:
- * 
+ *
  * Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
  * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012
- * 
+ *
  * @author Anton Beloglazov
  */
 public class Helper {
 
 	/**
 	 * Creates the vm list.
-	 * 
+	 *
 	 * @param brokerId the broker id
 	 * @param vmsNumber the vms number
-	 * 
+	 *
 	 * @return the list< vm>
 	 */
 	public static List<Vm> createVmList(int brokerId, int vmsNumber) {
@@ -83,9 +83,9 @@ public class Helper {
 
 	/**
 	 * Creates the host list.
-	 * 
+	 *
 	 * @param hostsNumber the hosts number
-	 * 
+	 *
 	 * @return the list< power host>
 	 */
 	public static List<PowerHost> createHostList(int hostsNumber) {
@@ -112,7 +112,7 @@ public class Helper {
 
 	/**
 	 * Creates the broker.
-	 * 
+	 *
 	 * @return the datacenter broker
 	 */
 	public static DatacenterBroker createBroker() {
@@ -128,15 +128,15 @@ public class Helper {
 
 	/**
 	 * Creates the datacenter.
-	 * 
+	 *
 	 * @param name the name
 	 * @param datacenterClass the datacenter class
 	 * @param hostList the host list
 	 * @param vmAllocationPolicy the vm allocation policy
 	 * @param simulationLength
-	 * 
+	 *
 	 * @return the power datacenter
-	 * 
+	 *
 	 * @throws Exception the exception
 	 */
 	public static Datacenter createDatacenter(
@@ -187,7 +187,7 @@ public class Helper {
 
 	/**
 	 * Gets the times before host shutdown.
-	 * 
+	 *
 	 * @param hosts the hosts
 	 * @return the times before host shutdown
 	 */
@@ -211,7 +211,7 @@ public class Helper {
 
 	/**
 	 * Gets the times before vm migration.
-	 * 
+	 *
 	 * @param vms the vms
 	 * @return the times before vm migration
 	 */
@@ -235,7 +235,7 @@ public class Helper {
 
 	/**
 	 * Prints the results.
-	 * 
+	 *
 	 * @param datacenter the datacenter
 	 * @param lastClock the last clock
 	 * @param experimentName the experiment name
@@ -465,7 +465,7 @@ public class Helper {
 
 	/**
 	 * Parses the experiment name.
-	 * 
+	 *
 	 * @param name the name
 	 * @return the string
 	 */
@@ -486,7 +486,7 @@ public class Helper {
 
 	/**
 	 * Gets the sla time per active host.
-	 * 
+	 *
 	 * @param hosts the hosts
 	 * @return the sla time per active host
 	 */
@@ -522,7 +522,7 @@ public class Helper {
 
 	/**
 	 * Gets the sla time per host.
-	 * 
+	 *
 	 * @param hosts the hosts
 	 * @return the sla time per host
 	 */
@@ -556,7 +556,7 @@ public class Helper {
 
 	/**
 	 * Gets the sla metrics.
-	 * 
+	 *
 	 * @param vms the vms
 	 * @return the sla metrics
 	 */
@@ -619,7 +619,7 @@ public class Helper {
 
 	/**
 	 * Write data column.
-	 * 
+	 *
 	 * @param data the data
 	 * @param outputPath the output path
 	 */
@@ -645,7 +645,7 @@ public class Helper {
 
 	/**
 	 * Write data row.
-	 * 
+	 *
 	 * @param data the data
 	 * @param outputPath the output path
 	 */
@@ -669,7 +669,7 @@ public class Helper {
 
 	/**
 	 * Write metric history.
-	 * 
+	 *
 	 * @param hosts the hosts
 	 * @param vmAllocationPolicy the vm allocation policy
 	 * @param outputPath the output path
@@ -697,14 +697,28 @@ public class Helper {
 				List<Double> timeData = vmAllocationPolicy.getTimeHistory().get(host.getId());
 				List<Double> utilizationData = vmAllocationPolicy.getUtilizationHistory().get(host.getId());
 				List<Double> metricData = vmAllocationPolicy.getMetricHistory().get(host.getId());
+				List<Double> coolingData = vmAllocationPolicy.getCoolingPowerHistory().get(host.getId());
+				List<Double> computeData = vmAllocationPolicy.getComputePowerHistory().get(host.getId());
+				List<Double> pueData = vmAllocationPolicy.getPUEHistory().get(host.getId());
 
 				for (int i = 0; i < timeData.size(); i++) {
 					writer.write(String.format(
-							"%.2f,%.2f,%.2f\n",
+							"%.2f,%.2f,%.2f",
 							timeData.get(i),
 							utilizationData.get(i),
 							metricData.get(i)));
+
+					if (coolingData != null && computeData != null && pueData != null) {
+						writer.write(String.format(
+								"%.2f,%.2f,%.2f",
+								coolingData.get(i),
+								computeData.get(i),
+								pueData.get(i)));
+					}
+
+					writer.newLine();
 				}
+
 				writer.close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -715,7 +729,7 @@ public class Helper {
 
 	/**
 	 * Prints the Cloudlet objects.
-	 * 
+	 *
 	 * @param list list of Cloudlets
 	 */
 	public static void printCloudletList(List<Cloudlet> list) {
@@ -744,7 +758,7 @@ public class Helper {
 
 	/**
 	 * Prints the metric history.
-	 * 
+	 *
 	 * @param hosts the hosts
 	 * @param vmAllocationPolicy the vm allocation policy
 	 */
@@ -771,6 +785,25 @@ public class Helper {
 
 			for (Double metric : vmAllocationPolicy.getMetricHistory().get(host.getId())) {
 				Log.format("%.2f, ", metric);
+			}
+			Log.printLine();
+
+			if (!vmAllocationPolicy.getCoolingPowerHistory().containsKey(host.getId())) {
+				continue;
+			}
+
+			for (Double cooling : vmAllocationPolicy.getCoolingPowerHistory().get(host.getId())) {
+				Log.format("%.2f, ", cooling);
+			}
+			Log.printLine();
+
+			for (Double compute : vmAllocationPolicy.getComputePowerHistory().get(host.getId())) {
+				Log.format("%.2f, ", compute);
+			}
+			Log.printLine();
+
+			for (Double pue : vmAllocationPolicy.getPUEHistory().get(host.getId())) {
+				Log.format("%.2f, ", pue);
 			}
 			Log.printLine();
 		}
