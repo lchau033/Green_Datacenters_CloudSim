@@ -435,6 +435,12 @@ public class Helper {
 				double executionTimeTotalStDev = MathUtil.stDev(vmAllocationPolicy
 						.getExecutionTimeHistoryTotal());
 
+				Map<String, Double> pueMetrics = getPUEMetrics(hosts, vmAllocationPolicy);
+
+				Log.printLine(String.format("Average cooling power: %.2f", pueMetrics.get("cooling")));
+				Log.printLine(String.format("Average compute power: %.2f", pueMetrics.get("compute")));
+				Log.printLine(String.format("Average PUE: %.2f", pueMetrics.get("pue")));
+
 				Log.printLine(String.format(
 						"Execution time - VM selection mean: %.5f sec",
 						executionTimeVmSelectionMean));
@@ -552,6 +558,37 @@ public class Helper {
 		}
 
 		return slaViolationTimePerHost / totalTime;
+	}
+
+	protected static Map<String, Double> getPUEMetrics(List<Host> hosts, PowerVmAllocationPolicyMigrationAbstract vmAllocationPolicy) {
+		Map<String, Double> metrics = new HashMap<String, Double>();
+		double averageCooling = 0;
+		double averageCompute = 0;
+		double averagePUE = 0;
+		int totalHosts = 0;
+
+		Map<Integer, List<Double>> coolingHistory = vmAllocationPolicy.getCoolingPowerHistory();
+		Map<Integer, List<Double>> computeHistory = vmAllocationPolicy.getComputePowerHistory();
+		Map<Integer, List<Double>> pueHistory = vmAllocationPolicy.getPUEHistory();
+
+		for (Host host : hosts) {
+			if (host instanceof PowerHost) {
+				totalHosts += 1;
+				averageCooling += MathUtil.mean(coolingHistory.get(host.getId()));
+				averageCompute += MathUtil.mean(computeHistory.get(host.getId()));
+				averagePUE += MathUtil.mean(pueHistory.get(host.getId()));
+			}
+		}
+
+		averageCooling /= totalHosts;
+		averageCompute /= totalHosts;
+		averagePUE /= totalHosts;
+
+		metrics.put("cooling", averageCooling);
+		metrics.put("compute", averageCompute);
+		metrics.put("pue", averagePUE);
+
+		return metrics;
 	}
 
 	/**
