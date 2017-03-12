@@ -7,7 +7,7 @@ import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.examples.power.Constants;
 
-public class PowerVmAllocationPolicyMigrationPowerUsageEfficiency extends PowerVmAllocationPolicyMigrationAbstract {
+public class PowerVmAllocationPolicyMigrationStaticBasedPUE extends PowerVmAllocationPolicyMigrationAbstract {
 
 	/** The utilization threshold. */
 	private double utilizationThreshold = 0.9;
@@ -19,7 +19,7 @@ public class PowerVmAllocationPolicyMigrationPowerUsageEfficiency extends PowerV
 	 * @param vmSelectionPolicy the vm selection policy
 	 * @param utilizationThreshold the utilization threshold
 	 */
-	public PowerVmAllocationPolicyMigrationPowerUsageEfficiency(
+	public PowerVmAllocationPolicyMigrationStaticBasedPUE(
 			List<? extends Host> hostList,
 			PowerVmSelectionPolicy vmSelectionPolicy,
 			double utilizationThreshold) {
@@ -70,7 +70,13 @@ public class PowerVmAllocationPolicyMigrationPowerUsageEfficiency extends PowerV
 				continue;
 			}
 			
-			double powerUsageEfficiency = host.getPowerUsageEfficiency();
+			double currentRequestedMips = host.getCurrentRequestedMips() + vm.getCurrentRequestedTotalMips();
+			double serverLoadPercentage = currentRequestedMips / (host.getTotalMips() + currentRequestedMips);
+			
+			double computePower = host.getComputePower(serverLoadPercentage);
+			double coolingPower = host.getCoolingPower(serverLoadPercentage);
+			
+			double powerUsageEfficiency = (coolingPower + computePower) / computePower;
 			if (powerUsageEfficiency < min && host.isSuitableForVm(vm)) {
 				min = powerUsageEfficiency;
 				minHost = host;

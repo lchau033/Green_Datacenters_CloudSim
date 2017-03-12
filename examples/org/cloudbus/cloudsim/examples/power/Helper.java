@@ -573,10 +573,19 @@ public class Helper {
 
 		for (Host host : hosts) {
 			if (host instanceof PowerHost) {
+				List<Double> cooling = coolingHistory.get(host.getId());
+				List<Double> compute = computeHistory.get(host.getId());
+				List<Double> pue = pueHistory.get(host.getId());
+				
+				if (cooling == null || compute == null || pue == null) {
+					continue;
+				}
+				
 				totalHosts += 1;
-				averageCooling += MathUtil.mean(coolingHistory.get(host.getId()));
-				averageCompute += MathUtil.mean(computeHistory.get(host.getId()));
-				averagePUE += MathUtil.mean(pueHistory.get(host.getId()));
+				
+				averageCooling += MathUtil.mean(cooling);
+				averageCompute += MathUtil.mean(compute);
+				averagePUE += MathUtil.mean(pue);
 			}
 		}
 

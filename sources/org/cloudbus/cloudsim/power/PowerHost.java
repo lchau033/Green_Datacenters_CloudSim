@@ -150,8 +150,8 @@ public class PowerHost extends HostDynamicWorkload {
 	 * 
 	 * @return the current compute power
 	 */
-	public double getComputePower() {
-		return getPowerModel().getPower(getServerLoadPercentage());
+	public double getComputePower(double serverLoadPCT) {
+		return getPowerModel().getPower(serverLoadPCT);
 	}
 	
 	/**
@@ -159,8 +159,8 @@ public class PowerHost extends HostDynamicWorkload {
 	 * 
 	 * @return the current cooling power
 	 */
-	public double getCoolingPower() {
-		return Constants.getCoolingPower(getServerLoadPercentage(), getComputePower());
+	public double getCoolingPower(double serverLoadPCT) {
+		return Constants.getCoolingPower(serverLoadPCT, getComputePower(serverLoadPCT));
 	}
 		
 	/**
@@ -169,8 +169,8 @@ public class PowerHost extends HostDynamicWorkload {
 	 * @return the current power usage efficiency
 	 */
 	public double getPowerUsageEfficiency() {
-		double computePower = getComputePower();
-		double coolingPower = getCoolingPower();
+		double computePower = getComputePower(getServerLoadPercentage());
+		double coolingPower = getCoolingPower(getServerLoadPercentage());
 		return (coolingPower + computePower) / computePower;
 	}
 }

@@ -19,7 +19,8 @@ import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationInterQuartile
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationLocalRegression;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationLocalRegressionRobust;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation;
-import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationPowerUsageEfficiency;
+import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationStaticBasedPUE;
+import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationIQRBasedPUE;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationStaticThreshold;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicySimple;
 import org.cloudbus.cloudsim.power.PowerVmSelectionPolicy;
@@ -285,11 +286,21 @@ public abstract class RunnerAbstract {
 					parameter);
 		} else if (vmAllocationPolicyName.equals("dvfs")) {
 			vmAllocationPolicy = new PowerVmAllocationPolicySimple(hostList);
-		} else if (vmAllocationPolicyName.equals("pue")) {
-			vmAllocationPolicy = new PowerVmAllocationPolicyMigrationPowerUsageEfficiency(
+		} else if (vmAllocationPolicyName.equals("puestatic")) {
+			vmAllocationPolicy = new PowerVmAllocationPolicyMigrationStaticBasedPUE(
 					hostList,
 					vmSelectionPolicy,
 					parameter);
+		} else if (vmAllocationPolicyName.equals("pueiqr")) {
+			PowerVmAllocationPolicyMigrationAbstract fallbackVmSelectionPolicy = new PowerVmAllocationPolicyMigrationStaticBasedPUE(
+					hostList,
+					vmSelectionPolicy,
+					0.7);
+			vmAllocationPolicy = new PowerVmAllocationPolicyMigrationIQRBasedPUE(
+					hostList,
+					vmSelectionPolicy,
+					parameter,
+					fallbackVmSelectionPolicy);
 		} else {
 			System.out.println("Unknown VM allocation policy: " + vmAllocationPolicyName);
 			System.exit(0);

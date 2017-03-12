@@ -508,8 +508,8 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 			
 			if (host instanceof PowerHost) {
 				PowerHost powerHost = (PowerHost) host;
-				getCoolingPowerHistory().get(hostId).add(powerHost.getCoolingPower());
-				getComputePowerHistory().get(hostId).add(powerHost.getComputePower());
+				getCoolingPowerHistory().get(hostId).add(powerHost.getCoolingPower(powerHost.getServerLoadPercentage()));
+				getComputePowerHistory().get(hostId).add(powerHost.getComputePower(powerHost.getServerLoadPercentage()));
 				getPUEHistory().get(hostId).add(powerHost.getPowerUsageEfficiency());
 			}
 		}

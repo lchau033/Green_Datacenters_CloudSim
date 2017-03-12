@@ -2,7 +2,7 @@ package org.cloudbus.cloudsim.examples.power.planetlab;
 
 import java.io.IOException;
 
-public class PUE {
+public class PueStaticRs {
 
 	/**
 	 * The main method.
@@ -16,7 +16,7 @@ public class PUE {
 		String inputFolder = NonPowerAware.class.getClassLoader().getResource("workload/planetlab").getPath();
 		String outputFolder = "output";
 		String workload = "20110303"; // PlanetLab workload
-		String vmAllocationPolicy = "pue"; // Static Threshold (THR) VM allocation policy
+		String vmAllocationPolicy = "puestatic"; // Static Threshold (THR) VM allocation policy
 		String vmSelectionPolicy = "rs"; // Random Selection (RS) VM selection policy
 		String parameter = "0.8"; // the static utilization threshold
 
