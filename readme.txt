@@ -1,82 +1,33 @@
-Table of Contents
------------------
-
-1. Directory structure of the CloudSim Toolkit
-2. Software requirements: Java version 1.6 or newer 
-3. Installation and running the CloudSim Toolkit
-4. Running the CloudSim examples
-5. Learning CloudSim
-6. Compiling CloudSim: using Ant
-
-
-
-1. Directory structure of the CloudSim Toolkit
-----------------------------------------------
-
-cloudsim/                -- top level CloudSim directory
-	docs/            -- CloudSim API Documentation
-	examples/        -- CloudSim examples
-	jars/            -- CloudSim jar archives
-	sources/         -- CloudSim source code
-	tests/           -- CloudSim unit tests
-
-
-2. Software requirements: Java version 1.6 or newer
----------------------------------------------------
-
-CloudSim has been tested and ran on Sun's Java version 1.6.0 or newer.
-Older versions of Java are not compatible.
-If you have non-Sun Java version, such as gcj or J++, they may not be compatible.
-You also need to install Ant to compile CloudSim (explained in more details later).
-
-
-3. Installation and running the CloudSim Toolkit
-------------------------------------------------
-
-You just need to unpack the CloudSim file to install.
-If you want to remove CloudSim, then remove the whole cloudsim directory.
-You do not need to compile CloudSim source code. The JAR files are
-provided to compile and to run CloudSim applications:
-
-  * jars/cloudsim-<VERSION>.jar                    -- contains the CloudSim class files
-  * jars/cloudsim-<VERSION>-sources.jar            -- contains the CloudSim source code files
-  * jars/cloudsim-examples-<VERSION>.jar           -- contains the CloudSim examples class files
-  * jars/cloudsim-examples-<VERSION>-sources.jar   -- contains the CloudSim examples source code files
-
-
-4. Running the CloudSim examples
---------------------------------
-
-Please read how to run the CloudSim examples in examples.txt
-
-
-5. Learning CloudSim
---------------------
-
-To understand how to use CloudSim, please go through the examples provided
-in the examples/ directory.
-
-
-6. Compiling CloudSim: using Ant
---------------------------------
-
-This release contains a simple buildfile for compiling CloudSim classes.
-You need to have ant installed (http://ant.apache.org/).
-Ant can be used in both Windows and Unix/Linux environment.
-
-Usage:
-
-  * Being in the CloudSim root directory (cloudsim/), type 'ant' to compile all 
-    cloudsim source files, put them into the classes/ directory and to create 
-    a cloudsim-new.jar file in the jars/ directory
-    
-  * Being in the CloudSim root directory (cloudsim/), type 'ant clean' to delete 
-    all the compiled classes and the classes/ directory itself. The generated 
-    cloudsim-new.jar is not deleted.
-
-Note:
-
-  * You need to set up PATH for ant in Windows and/or Unix.
-  
-  
-
+This project invovlves a simulation using CloudSim a software that 
+is available here (https://github.com/Cloudslab/cloudsim/releases). 
+For this simulation as a team of two we tried to simulate several 
+Green Datacenter algorithms to migrate virtual machines and save power. 
+In order to do this we changed the following files:
+----------------------------------------------------------------------------------------------------
+---PowerVmAllocationPolicyMigrationIQRBasedPUE.java and 
+   PowerVmAllocationPolicyMigrationStaticBasedPUE.java which respectively 
+   contain the implementation of our Power Usage Efficiency (PUE) algorithm 
+   using the Inter quartile Range's strategy to find overloadeed and underloaded 
+   hosts and using the Static based strategy to find overloaded and underloaded 
+   hosts. We created both of these because we were trying to find out what would 
+   be the best way to find an overloaded and underloaded host. We found that the 
+   IQR PUE algorithm gave us the best results and we will show these results in 
+   our report.  
+---PueIqrMc.java, PueIqrRs.java, PueStaticMc.java and PueStaticRs.java 
+   which respectively will run our main provisioning algorithm with the IQR based 
+   strategy to find overloaded and underloaded hosts using the Power Best Fit Decreasing 
+   as a selection policy, the random selection policy, our PUE algorithm with the Static 
+   Based strategy to find overloaded and underloaded hosts using the Power Best Fit 
+   Decreasing as a selection policy and the random selection policy. 
+---The runner abstract (RunnerAbstract.java) where we added our policies in the 
+   else if because policies are decided based on strings.
+---Constants.java where we added constants to convert server load into cooling with a 
+   method. The file Host.jave where we just added a method for calculating the 
+   currentTotalRequestedMips of a Host. 
+---The helper, the power host and the abstract for the VM migration allocation policy, 
+   which are respectively Helper.java and PowerHost.java and 
+   PowerVmAllocationPolicyMigrationAbstract.java, where we added the implementation 
+   to calculate the computing and cooling power history and the PUE history, in order 
+   to get average computing and cooling power and PUE for each provisioning policy. 
+   ------------------------------------------------------------------------------------------------------
+   A report of our research is avaible on overleaf at https://www.overleaf.com/8634797pmmxxwhwsfwn#/30747965/.
